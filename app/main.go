@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-var VERSION = "0.1.3"
+var VERSION = "0.1.4"
 
 func main() {
 	var cur_path string
@@ -42,10 +42,10 @@ func main() {
 	for i := range files {
 		txt = append(txt, files[i]+","+Conf.artist+","+Conf.title+","+Conf.description+",\""+Conf.keywords+"\"")
 	}
-	fmt.Println(txt)
-
-	if err := writeLines(txt, "./result.csv"); err != nil {
+	if err := writeLines(txt, cur_path+"/keywords.csv"); err != nil {
 		log.Fatalf("writeLines: %s", err)
+	} else {
+		fmt.Println("finished - ", len(txt)-1, "files")
 	}
 }
 

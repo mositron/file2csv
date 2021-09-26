@@ -8,20 +8,32 @@ import (
 	"path/filepath"
 )
 
-var VERSION = "0.1.1"
+var VERSION = "0.1.3"
 
 func main() {
+	var cur_path string
+	ex, er := os.Executable()
+	if er == nil {
+		cur_path = filepath.Dir(ex)
+	} else {
+		exReal, er := filepath.EvalSymlinks(ex)
+		if er != nil {
+			panic(er)
+		}
+		cur_path = filepath.Dir(exReal)
+	}
+
+	fmt.Println("Directory:", cur_path)
 
 	log.SetFlags(0)
-	LoadIni()
+	LoadIni(cur_path)
 
 	var files, file []string
-	var err error
 
 	for i := range Conf.path {
-		file, err = WalkMatch(Conf.path[i])
+		file, er = WalkMatch(Conf.path[i])
 		fmt.Println(" - ", Conf.path[i])
-		if err == nil {
+		if er == nil {
 			files = append(files, file...)
 		}
 	}
@@ -40,7 +52,7 @@ func main() {
 func WalkMatch(root string) ([]string, error) {
 	var matches []string
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		fmt.Println(" - ", path)
+		//fmt.Println(" - ", path)
 		if err != nil {
 			return err
 		}
@@ -49,7 +61,7 @@ func WalkMatch(root string) ([]string, error) {
 		}
 		for i := range Conf.name {
 			if matched, err := filepath.Match(Conf.name[i], filepath.Base(path)); err != nil {
-				fmt.Println(" = ", filepath.Base(path), Conf.name[i], err)
+				//fmt.Println(" = ", filepath.Base(path), Conf.name[i], err)
 				//return err
 			} else if matched {
 				fmt.Println(" + ", filepath.Base(path), Conf.name[i])

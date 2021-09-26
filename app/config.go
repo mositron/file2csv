@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -19,8 +18,8 @@ type GConf struct {
 
 var Conf *GConf
 
-func LoadIni() {
-	file, err := os.Open("./config.ini")
+func LoadIni(cur_path string) {
+	file, err := os.Open(cur_path + "/config.ini")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +29,7 @@ func LoadIni() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		txt := strings.SplitN(strings.TrimSpace(scanner.Text()), "=", 2)
-		fmt.Println(txt)
+		//fmt.Println(txt)
 		if len(txt) == 2 {
 			cmd := strings.TrimSpace(txt[0])
 			val := strings.TrimSpace(txt[1])
@@ -53,18 +52,22 @@ func LoadIni() {
 					Conf.keywords = val
 				}
 			case "file_path":
-				fmt.Println("file_path", val)
+				//fmt.Println("file_path", val)
 				if val != "" {
 					v := strings.Split(val, ",")
 					for i := range v {
 						vr := strings.ToLower(strings.TrimSpace(v[i]))
 						if vr != "" {
-							Conf.path = append(Conf.path, vr)
+							p := vr
+							if p[0:2] == "./" {
+								p = cur_path + vr[1:]
+							}
+							Conf.path = append(Conf.path, p)
 						}
 					}
 				}
 			case "file_name":
-				fmt.Println("file_name", val)
+				//fmt.Println("file_name", val)
 				if val != "" {
 					v := strings.Split(val, ",")
 					for i := range v {

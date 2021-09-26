@@ -1,6 +1,6 @@
 #!/bin/bash
 
-V=0.1.1
+V=0.1.3
 _os=('windows:win:.exe:386_-x86,amd64_-x64' 'linux:linux:x:386_-x86,amd64_-x64' 'darwin:mac:x:amd64_x')
 
 for _s in ${_os[@]}
@@ -28,7 +28,7 @@ do
         fi
         rm -f ./bin/file2csv-$V-$_n$_in.zip
         #_nv=file2csv-$V-$_n$_in$_e
-        _nv=file2csv-$V$_e
+        _nv=file2csv$_e
         GOOS=$_o GOARCH=$_ia go build -o $_nv ./app
         zip -r ./bin/file2csv-$V-$_n$_in.zip $_nv config.ini
         rm -f $_nv
